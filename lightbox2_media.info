@@ -1,0 +1,6 @@
+name = Lightbox2 for Media fields
+description = Display Media fields as Lightbox2 slideshows
+package = User interface
+core = 7.x
+dependencies[] = media
+dependencies[] = lightbox2

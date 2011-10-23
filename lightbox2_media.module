@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * @file
+ * Provides a field formatter for media fields.
+ */
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function lightbox2_media_field_formatter_info() {
+  return array(
+    'lightbox2_media_default' => array(
+      'label' => t('Lightbox2'),
+      'field types' => array('media'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function lightbox2_media_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $files = array();
+  foreach ($items as $delta => $item) {
+    $files[$item['fid']] = $item['file'];
+  }
+
+  $elements = file_view_multiple($files, 'default', 0, $langcode);
+
+  foreach ($elements as $delta => $element) {
+    if (is_int($delta)) {
+      $elements[$delta]['file'] = array(
+        '#theme' => 'link',
+        '#options' => array(
+          'attributes' => array(
+            'rel' => 'lightbox[' . $field['field_name'] . '][]',
+          ),
+          'html' => TRUE,
+        ),
+        '#text' => render($element['file']),
+        '#path' => image_style_url('large', $element['file']['#path']),
+      );
+    }
+  }
+
+  return $elements;
+}
